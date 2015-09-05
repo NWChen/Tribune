@@ -1,6 +1,6 @@
 # pennapps
 ---
---shitty-- ideas
+### ~~shitty~~ ideas
 * app to generate rap lyrics using NLP
 * app to automatically detect and label privilege
 * sockulus: 2D ultrasonic environment mapping for blind people
@@ -8,4 +8,4 @@
 * notice.me: posts the same image of yourself on every social network
 * streetview historical overlaying
 * motorized pennyboard using myo
-* 
+* script to repeatedly commit and make you look good on GitHub
