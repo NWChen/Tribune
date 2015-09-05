@@ -4,6 +4,7 @@ map = null;
 panorama = null;
 
 Template.main.onCreated(function() {
+	yelpQuery('a','a','a','a');
 	// GoogleMaps.ready("map", function(map) {
 	// 	console.log("map here");
 	// 	var marker = new google.maps.Marker({
@@ -83,7 +84,8 @@ Template.main.onCreated(function() {
 
 	  /* Map Event Listeners */
 	  panorama.addListener('position_changed', function() {
-	  	console.log(panorama.getPosition());
+	  	console.log(panorama.getPosition().G);
+	  	console.log(panorama.getPosition().K);
 	  	//TODO collect yelp queries
 	  })
 	};
@@ -102,6 +104,55 @@ Template.main.helpers({
 		return loc;
 	}
 })
+
+/* Yelp functions */
+var yelpQuery = function(search, isCategory, longitude, latitude) {
+  console.log('Yelp search for userId: ' + this.userId + '(search, isCategory, lng, lat) with vals (', search, isCategory, longitude, latitude, ')');
+
+  // Query OAUTH credentials (these are set manually)
+  var auth = Yelp.findOne();
+  console.log(auth);
+  return
+
+
+  // Add auth signature manually
+  auth['serviceProvider'] = { signatureMethod: "HMAC-SHA1" };
+
+  var accessor = {
+    consumerSecret: auth.consumerSecret,
+    tokenSecret: auth.accessTokenSecret
+  },
+  parameters = {};
+
+  // Search term or categories query
+  if(isCategory)
+    parameters.category_filter = search;
+  else
+    parameters.term = search;
+
+  // Set lat, lon location, if available (SF is default location)
+  if(longitude && latitude)
+    parameters.ll = latitude + ',' + longitude;
+  else
+    parameters.location = 'San+Francisco';
+
+  // Results limited to 5
+  parameters.limit = 5;
+
+  // Configure OAUTH parameters for REST call
+  parameters.oauth_consumer_key = auth.consumerKey;
+  parameters.oauth_consumer_secret = auth.consumerSecret;
+  parameters.oauth_token = auth.accessToken;
+  parameters.oauth_signature_method = auth.serviceProvider.signatureMethod;
+
+  // Create OAUTH1 headers to make request to Yelp API
+  var oauthBinding = new OAuth1Binding(auth.consumerKey, auth.consumerSecret, 'http://api.yelp.com/v2/search');
+  oauthBinding.accessTokenSecret = auth.accessTokenSecret;
+  var headers = oauthBinding._buildHeader();
+
+  // Return data results only
+  return oauthBinding._call('GET', 'http://api.yelp.com/v2/search', headers, parameters).data;
+}
 // Template.home.helpers({
 // 	MapOptions: function() {
 // 		loc = Geolocation.latLng()
