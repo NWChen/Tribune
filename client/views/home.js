@@ -1,4 +1,4 @@
-radius = 10;
+radius = 1;
 userpos = null;
 geocoder = null;
 map = null;
@@ -27,22 +27,23 @@ Template.main.onCreated(function() {
       '</div>'+
       '</div>';
 
-	  var infowindow = new google.maps.InfoWindow({
-	    content: contentString
-	  });
+  var infowindow = new google.maps.InfoWindow({
+    content: contentString
+  });
 
-    //grab user's current physical location
-    if(navigator.geolocation) {
-      browserSupportFlag = true;
-      navigator.geolocation.getCurrentPosition(function(position) {
-        userpos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-      }, function() {
-        handleNoGeolocation(browserSupportFlag);
-      });
-    } else {
-      userpos = new google.maps.LatLng(40.7127, 74.0059);
-    }
+  //grab user's current physical location
+  if(navigator.geolocation) {
+    browserSupportFlag = true;
+    navigator.geolocation.getCurrentPosition(function(position) {
+      userpos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    }, function() {
+      handleNoGeolocation(browserSupportFlag);
+    });
+  } else {
+    userpos = new google.maps.LatLng(40.7127, 74.0059);
+  }
 	
+  //recursively look for a valid streetview position
   function handler(data, status) {
     if(status==google.maps.StreetViewStatus.OK) {
       var nearStreetViewLocation = data.location.latLng;
