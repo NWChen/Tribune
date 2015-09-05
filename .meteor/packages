@@ -1,0 +1,5 @@
+standard-app-packages
+iron:router
+twbs:bootstrap
+insecure
+autopublish
