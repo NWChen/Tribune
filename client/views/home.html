@@ -11,33 +11,14 @@
 </body>
 
 <template name="main">
-  	<div class="container-fluid" id="cfl">
-  		<div class="row no-pad center-block" id="banner">
-  			HOLY FUCKING SHIT
-  		</div>
-  		<div class="row no-pad center-block" id="tools">
-	  		<form>
-	  			<div class="col-md-1"></div>
-	  			<div class="col-md-2" id="lbl">
-	  				<label>ENTER LOCATION</label>
-	  			</div>
-	  			<div class="col-md-6" style="padding-left:0;padding-right:0">
-	  				<input id="location" placeholder=" P. Sherman 42 Wallaby Way, Sydney"/>
-	  			</div>
-	  			<div class="col-md-2" style="padding-left:0">
-	  				<button id="go" type="button">SUBMIT</button>
-	  			</div>
-	  		</form>
-  		</div>
-  		<div class="row">
-			<div id="map"></div>
-			<div id="sv"></div>
-			
-			<label id="marker">
-				<h1>{{title}}</h1>
-				<h3>{{date}}</h3>
-				<p>{{description}}</p>
-			</label>
-		</div>
+	<div class="row">
+	<div id="map"></div>
+	<div id="sv"></div>
+		
+		<label id="marker">
+			<h1>{{title}}</h1>
+			<h3>{{date}}</h3>
+			<p>{{description}}</p>
+		</label>
 	</div>
 </template>
