@@ -38,23 +38,12 @@ Template.main.onCreated(function() {
 	if(navigator.geolocation) {
   	browserSupportFlag = true;
   	navigator.geolocation.getCurrentPosition(function(position) {
-    	userpos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-  	}, function() {
+      userpos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    }, function() {
     		handleNoGeolocation(browserSupportFlag);
   	});
 	} else {
     userpos = new google.maps.LatLng(40.7127, 74.0059);
-	}
-
-
-	//recursively look for a valid streetview position
-	function handler(data, status) {
-		if(status==google.maps.StreetViewStatus.OK) {
-			var userpos = data.location.latLng;
-		} else {
-			radius += 5;
-			streetViewService.getPanoramaByLocation(userpos, radius, handler);
-		}
 	}
 
 	function initialize() {
@@ -79,6 +68,20 @@ Template.main.onCreated(function() {
 		panorama = new google.maps.StreetViewPanorama(document.getElementById('sv'), panoramaOptions);
 	  	map.setStreetView(panorama);
 
+	//recursively look for a valid streetview position
+		function handler(data, status) {
+			if(status==google.maps.StreetViewStatus.OK) {
+				console.log(":",data);
+				map.setCenter(data.location.latLng);
+				//panorama.setPosition(data.location.latLng);
+			} else {
+				radius += 5;
+				streetViewService.getPanoramaByLocation(userpos, radius, handler);
+			}
+		}
+
+		//>>>>panorama.setPosition(new google.maps.LatLng(40.7127, 74.0059));
+
 	  // 	var cafeMarker = new google.maps.Marker({
 			// position: {lat: 39.9166412353516, lng: -75.1684875488281},
 	  //     	map: map,
@@ -98,8 +101,6 @@ Template.main.onCreated(function() {
 
 	  	/* Map Event Listeners */
 	  	panorama.addListener('position_changed', function() {
-	  		console.log(panorama.getPosition().G);
-	  		console.log(panorama.getPosition().K);
 	  		// console.log(Meteor.call("searchYelp", '', 'false', panorama.getPosition().G, panorama.getPosition().K));
 	  		Meteor.call("searchYelp", '', 'false', panorama.getPosition().G, panorama.getPosition().K, function(err, result) {
 		  		if (err) {
