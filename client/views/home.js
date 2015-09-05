@@ -80,6 +80,11 @@ Template.main.onCreated(function() {
 	  cafeMarker2.addListener('click', function() {
 	  	infowindow.open(panorama, cafeMarker2);
 	  })
+
+	  /* Map Event Listeners */
+	  panorama.addListener('position_changed', function() {
+	  	console.log(panorama.getPosition());
+	  })
 	};
 	google.maps.event.addDomListener(window, 'load', initialize);
 
