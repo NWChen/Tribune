@@ -11,6 +11,7 @@
   * everyblock API
   * google API
   * [http://nowandthen.meteor.com/](http://nowandthen.meteor.com/)
+  * humorous captions on certain landmarks
 * motorized pennyboard using myo
 * script to repeatedly commit and make you look good on GitHub
 * detect if your phone is currently located inside a bev
