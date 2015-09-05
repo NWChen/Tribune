@@ -14,3 +14,5 @@
 * motorized pennyboard using myo
 * script to repeatedly commit and make you look good on GitHub
 * detect if your phone is currently located inside a bev
+* phone stalker app so you can meet people and know your similar interests
+* social interaction app using meteor, so your bros can help you talk to that girl
