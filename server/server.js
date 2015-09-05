@@ -71,10 +71,17 @@ Meteor.methods({
     // Only return .data because that is how yelp formats its responses
     return oauthBinding.get(url).data;
   },
-	getWikiSummary: function(url) {
-		this.unblock();
-		var str = JSON.stringify(Meteor.http.call("GET", url).content.replace(/(<([^>]+)>)/ig,""));
-		var extract = str.substring(str.indexOf("extract")+12, str.indexOf("\\\\n")).replace("\\\\u00a0", " ");
-		return extract;
-	}
+  getWikiSummary: function(url) {
+	this.unblock();
+	var str = JSON.stringify(Meteor.http.call("GET", url).content.replace(/(<([^>]+)>)/ig,""));
+	var extract = str.substring(str.indexOf("extract")+12, str.indexOf("\\\\n")).replace("\\\\u00a0", " ");
+	return extract;
+  },
+  updateLocation: function(lat, lng, id) {
+  	this.unblock();
+  	return People.upsert({"id" : id},{$set : {"lat" : lat, "lng" : lng, "id" : id}});
+  },
+  removeUser: function(id) {
+  	People.remove({"id" : id});
+  }
 });
