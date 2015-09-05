@@ -4,4 +4,3 @@ twbs:bootstrap
 insecure
 autopublish
 mdg:geolocation
-dburles:google-maps

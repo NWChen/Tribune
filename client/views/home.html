@@ -1,8 +1,21 @@
 <template name="home">
   <div class="map-container-wrap">
     <div class="map-container">
+      <div id="map"></div>
+      <!-- {{#unless geolocationError}}
         {{> googleMap name="map" options=MapOptions}}
+      {{else}}
+        Geolocation failed: {{geolocationError}}
+      {{/unless}} -->
     </div>
+    <div class="sv-container">
+      <div id="sv"></div>
+      <!-- {{#unless geolocationError}}
+        {{> googleMap type="StreetViewPanorama" name="svmap" options=svMapOptions}}
+      {{/unless}} -->
+    </div>
+
+
   </div>
 
     <!-- modals -->

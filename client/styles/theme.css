@@ -1,3 +1,6 @@
+html {
+  height: 100%;
+}
 body {
   color: #eee;
   background: none;
@@ -30,15 +33,16 @@ button {
 }
 
 /* Google Maps Styling */
-.map-container {
+.map-container, .sv-container{
   width: 50%;
   /*height: 100%;*/
-  height: 1000px;
+  /*height: 1000px;*/
+  height: 100%;
   display: inline-block;
   float: left;
 }
 
-.map-container-wrap {
+.map-container-wrap  {
     width:100%;
     height:100%;
     padding:0;

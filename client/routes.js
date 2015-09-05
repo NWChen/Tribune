@@ -12,7 +12,6 @@ Router.map(function() {
 
 
 
-
 // Router.route('/', {name: 'home', controller: 'MainController'});
 
 // MainController = RouteController.extend({
