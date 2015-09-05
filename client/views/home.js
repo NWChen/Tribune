@@ -94,7 +94,16 @@ Template.main.onCreated(function() {
 
 	  /* Map Event Listeners */
 	  panorama.addListener('position_changed', function() {
-	  	console.log(panorama.getPosition());
+	  	console.log(panorama.getPosition().G);
+	  	console.log(panorama.getPosition().K);
+	  	// console.log(Meteor.call("searchYelp", '', 'false', panorama.getPosition().G, panorama.getPosition().K));
+	  	Meteor.call("searchYelp", '', 'false', panorama.getPosition().G, panorama.getPosition().K, function(err, result) {
+		  		if (err) {
+		  			console.log(err)
+		  		} else {
+		  			console.log(result)
+		  		}
+  		});
 	  	//TODO collect yelp queries
 	  })
 	};
@@ -108,3 +117,4 @@ Template.main.helpers({
 		return loc;
 	}
 })
+

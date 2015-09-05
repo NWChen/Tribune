@@ -1,8 +1,4 @@
 Meteor.startup(function() {
-	function initialize() {
-
-	};
-		
 	//obtain and clean up label summaryz
 	Meteor.call("getPage", "https://en.wikipedia.org/w/api.php?action=query&titles=Chrysler%20Building&prop=extracts&rvprop=content&format=json", function(error, results) {
 		var str = JSON.stringify(results.content.replace(/(<([^>]+)>)/ig,""));
