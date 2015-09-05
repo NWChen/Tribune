@@ -28,22 +28,23 @@ Template.main.onCreated(function() {
       	'</div>'+
       	'</div>';
 
-  	var infowindow = new google.maps.InfoWindow({
-    	content: contentString
-  	});
+	var infowindow = new google.maps.InfoWindow({
+  	content: contentString
+	});
 
-  	//grab user's current physical location
-  	if(navigator.geolocation) {
-    	browserSupportFlag = true;
-    	navigator.geolocation.getCurrentPosition(function(position) {
-      	userpos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    	}, function() {
-      		handleNoGeolocation(browserSupportFlag);
-    	});
-  	} else {
-	    userpos = new google.maps.LatLng(40.7127, 74.0059);
-  	}
+	//grab user's current physical location
+	if(navigator.geolocation) {
+  	browserSupportFlag = true;
+  	navigator.geolocation.getCurrentPosition(function(position) {
+    	userpos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  	}, function() {
+    		handleNoGeolocation(browserSupportFlag);
+  	});
+	} else {
+    userpos = new google.maps.LatLng(40.7127, 74.0059);
+	}
 	
+
 	//recursively look for a valid streetview position
 	function handler(data, status) {
 		if(status==google.maps.StreetViewStatus.OK) {
@@ -55,24 +56,24 @@ Template.main.onCreated(function() {
 	}
 
 	function initialize() {
-	  	geocoder = new google.maps.Geocoder();
+  	geocoder = new google.maps.Geocoder();
 
-	    streetViewService = new google.maps.StreetViewService();
-	    streetViewService.getPanoramaByLocation(userpos, radius, handler);
+    streetViewService = new google.maps.StreetViewService();
+    streetViewService.getPanoramaByLocation(userpos, radius, handler);
 
 		var mapOptions = {
 		    center: userpos,
 		    zoom: 16
 	  	};
-	  	map = new google.maps.Map(document.getElementById('map'), mapOptions);
+	  map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-	  	var panoramaOptions = {
-	    	position: userpos,
-	    	pov: {
-	     	 	heading: 34,
-		      	pitch: 10
-	    	}
-	  	};
+  	var panoramaOptions = {
+    	position: userpos,
+    	pov: {
+     	 	heading: 34,
+	      	pitch: 10
+    	}
+  	};
 		panorama = new google.maps.StreetViewPanorama(document.getElementById('sv'), panoramaOptions);
 	  	map.setStreetView(panorama);
 
