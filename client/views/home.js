@@ -49,7 +49,7 @@ Template.main.onCreated(function() {
       var nearStreetViewLocation = data.location.latLng;
     } else {
       radius += 5;
-      streetViewService.getPanoramaByLocation(latLng, radius, handler);
+      streetViewService.getPanoramaByLocation(userpos, radius, handler);
     }
   }
 
