@@ -1,4 +1,4 @@
-function revGeocode(geocoder, map, infowindow, latlng) {
+function revGeocode(geocoder, map, latlng) {
   geocoder.geocode({'location': latlng}, function(results, status) {
     if (status === google.maps.GeocoderStatus.OK) {
       if (results) {

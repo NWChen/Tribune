@@ -84,6 +84,7 @@ Template.main.onCreated(function() {
 	  /* Map Event Listeners */
 	  panorama.addListener('position_changed', function() {
 	  	console.log(panorama.getPosition());
+	  	//TODO collect yelp queries
 	  })
 	};
 	google.maps.event.addDomListener(window, 'load', initialize);
