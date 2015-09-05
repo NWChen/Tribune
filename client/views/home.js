@@ -1,21 +1,11 @@
-
+radius = 10;
+userpos = null;
 geocoder = null;
 map = null;
 panorama = null;
 
 Template.main.onCreated(function() {
-	// GoogleMaps.ready("map", function(map) {
-	// 	console.log("map here");
-	// 	var marker = new google.maps.Marker({
-	//       position: map.options.center,
-	//       map: map.instance
-	//     });
 
-	//     map.instance.setStreetView(GoogleMaps.maps.svmap);
-	//     console.log(GoogleMaps.maps.svmap);
-	// });
-	// GoogleMaps.ready("svmap", function(map) {
-	// });
 	var contentString = '<div id="content">'+
       '<div id="siteNotice">'+
       '</div>'+
@@ -40,20 +30,42 @@ Template.main.onCreated(function() {
 	  var infowindow = new google.maps.InfoWindow({
 	    content: contentString
 	  });
+
+    //grab user's current physical location
+    if(navigator.geolocation) {
+      browserSupportFlag = true;
+      navigator.geolocation.getCurrentPosition(function(position) {
+        userpos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      }, function() {
+        handleNoGeolocation(browserSupportFlag);
+      });
+    } else {
+      userpos = new google.maps.LatLng(40.7127, 74.0059);
+    }
 	
+  function handler(data, status) {
+    if(status==google.maps.StreetViewStatus.OK) {
+      var nearStreetViewLocation = data.location.latLng;
+    } else {
+      radius += 5;
+      streetViewService.getPanoramaByLocation(latLng, radius, handler);
+    }
+  }
+
 	function initialize() {
 	  geocoder = new google.maps.Geocoder();
-	  var fenway = new google.maps.LatLng(42.345573, -71.098326);
-	  var wells_fargo_stadium = new google.maps.LatLng(39.902114499999996, -75.17082359999999);
+
+    streetViewService = new google.maps.StreetViewService();
+    streetViewService.getPanoramaByLocation(userpos, radius, handler);
+
 	  var mapOptions = {
-	    center: fenway,
-	    // center: fenway,
-	    zoom: 14
+	    center: userpos,
+	    zoom: 16
 	  };
 	  map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
 	  var panoramaOptions = {
-	    position: fenway,
+	    position: userpos,
 	    pov: {
 	      heading: 34,
 	      pitch: 10
@@ -94,6 +106,7 @@ Template.main.onCreated(function() {
 	  	//TODO collect yelp queries
 	  })
 	};
+
 	google.maps.event.addDomListener(window, 'load', initialize);
 });
 
