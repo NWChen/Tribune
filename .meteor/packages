@@ -1,6 +1,8 @@
 standard-app-packages
 iron:router
-twbs:bootstrap
+mizzao:bootstrap-3
 insecure
 autopublish
 mdg:geolocation
+dburles:google-maps
+http

@@ -1,23 +1,43 @@
-<template name="home">
-  <div class="map-container-wrap">
-    <div class="map-container">
-      <div id="map"></div>
-      <!-- {{#unless geolocationError}}
-        {{> googleMap name="map" options=MapOptions}}
-      {{else}}
-        Geolocation failed: {{geolocationError}}
-      {{/unless}} -->
-    </div>
-    <div class="sv-container">
-      <div id="sv"></div>
-      <!-- {{#unless geolocationError}}
-        {{> googleMap type="StreetViewPanorama" name="svmap" options=svMapOptions}}
-      {{/unless}} -->
-    </div>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=geometry"></script>
+</head>
+<body>
+	{{>main}}
+</body>
 
-
-  </div>
-
-    <!-- modals -->
-
+<template name="main">
+  	<div class="container-fluid" id="cfl">
+  		<div class="row no-pad center-block" id="banner">
+  			HOLY FUCKING SHIT
+  		</div>
+  		<div class="row no-pad center-block" id="tools">
+	  		<form>
+	  			<div class="col-md-1"></div>
+	  			<div class="col-md-2" id="lbl">
+	  				<label>ENTER LOCATION</label>
+	  			</div>
+	  			<div class="col-md-6" style="padding-left:0;padding-right:0">
+	  				<input id="location" placeholder=" P. Sherman 42 Wallaby Way, Sydney"/>
+	  			</div>
+	  			<div class="col-md-2" style="padding-left:0">
+	  				<button id="go" type="button">SUBMIT</button>
+	  			</div>
+	  		</form>
+  		</div>
+  		<div class="row">
+			<div id="map"></div>
+			<div id="sv"></div>
+			
+			<label id="marker">
+				<h1>{{title}}</h1>
+				<h3>{{date}}</h3>
+				<p>{{description}}</p>
+			</label>
+		</div>
+	</div>
 </template>
