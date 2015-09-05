@@ -23,7 +23,6 @@ var getYelpOauthBinding = function(url) {
 Meteor.methods({
   searchYelp: function(search, isCategory, latitude, longitude) {
   	// return "hi";
-  	console.log("test");
     this.unblock();
     
     console.log('Yelp search for userId: ' + this.userId + '(search, isCategory, lat, lon) with vals (', search, isCategory, latitude, longitude, ')');
@@ -48,9 +47,11 @@ Meteor.methods({
     else
       parameters.location = 'New+York';
   	parameters.radius=100;
+  	parameters.sort=1;
 
     // Results limited to 20
     parameters.limit = 20;
+    console.log("parameters")
     console.log(parameters)
 
     // Only return .data because that is how yelp formats its responses
