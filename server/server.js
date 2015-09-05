@@ -47,9 +47,11 @@ Meteor.methods({
       parameters.ll = latitude + ',' + longitude;
     else
       parameters.location = 'New+York';
+  	parameters.radius=100;
 
-    // Results limited to 5
-    parameters.limit = 5;
+    // Results limited to 20
+    parameters.limit = 20;
+    console.log(parameters)
 
     // Only return .data because that is how yelp formats its responses
     return oauthBinding.get(url, parameters).data;
