@@ -32,6 +32,8 @@ Template.main.onCreated(function() {
   	content: contentString
 	});
 
+    var prevInfoWindow;
+
 	//grab user's current physical location
 	if(navigator.geolocation) {
   	browserSupportFlag = true;
@@ -43,7 +45,7 @@ Template.main.onCreated(function() {
 	} else {
     userpos = new google.maps.LatLng(40.7127, 74.0059);
 	}
-	
+
 
 	//recursively look for a valid streetview position
 	function handler(data, status) {
@@ -77,22 +79,22 @@ Template.main.onCreated(function() {
 		panorama = new google.maps.StreetViewPanorama(document.getElementById('sv'), panoramaOptions);
 	  	map.setStreetView(panorama);
 
-	  	var cafeMarker = new google.maps.Marker({
-			position: {lat: 39.9166412353516, lng: -75.1684875488281},
-	      	map: map,
-	      	icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=cafe|FFFF00',
-	      	title: 'Cafe'
-	  	});
-	  	var cafeMarker2 = new google.maps.Marker({
-	  		position: {lat: 42.345573, lng: -71.098326},
-	      	map: panorama,
-	      	icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=cafe|FFFF00',
-	      	title: 'Cafe'
-	  	});
+	  // 	var cafeMarker = new google.maps.Marker({
+			// position: {lat: 39.9166412353516, lng: -75.1684875488281},
+	  //     	map: map,
+	  //     	icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=cafe|FFFF00',
+	  //     	title: 'Cafe'
+	  // 	});
+	  // 	var cafeMarker2 = new google.maps.Marker({
+	  // 		position: {lat: 42.345573, lng: -71.098326},
+	  //     	map: panorama,
+	  //     	icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=cafe|FFFF00',
+	  //     	title: 'Cafe'
+	  // 	});
 
-	  	cafeMarker2.addListener('click', function() {
-	  		infowindow.open(panorama, cafeMarker2);
-	  	})
+	  // 	cafeMarker2.addListener('click', function() {
+	  // 		infowindow.open(panorama, cafeMarker2);
+	  // 	})
 
 	  	/* Map Event Listeners */
 	  	panorama.addListener('position_changed', function() {
@@ -118,7 +120,7 @@ Template.main.onCreated(function() {
 		  					map: map
 		  					//TODO add icon
 		  					//TODO add shape
-		  					//TODO add id? 
+		  					//TODO add id?
 		  				})
 		  				var svmarker = new google.maps.Marker({
 		  					draggable: false,
@@ -127,7 +129,7 @@ Template.main.onCreated(function() {
 		  					map: panorama
 		  					//TODO add icon
 		  					//TODO add shape
-		  					//TODO add id? 
+		  					//TODO add id?
 		  				})
 
 		  				var contentString = '<div id="content">'+
@@ -147,6 +149,8 @@ Template.main.onCreated(function() {
 					    events.push(item['id']);
 		  				marker.addListener('click', function() {
 		  					// infowindow.open(panorama, svmarker);
+                            if(prevInfoWindow) prevInfoWindow.close();
+                            prevInfoWindow = infowindow;
 		  					infowindow.open(map, marker);
 		  				})
 		  				svmarker.addListener('click', function() {
