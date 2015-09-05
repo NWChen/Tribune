@@ -88,53 +88,11 @@ Template.main.onCreated(function() {
 	  })
 	};
 	google.maps.event.addDomListener(window, 'load', initialize);
-
-	Meteor.call("getPage", "https://en.wikipedia.org/w/api.php?action=query&titles=Empire%20State%20Building&prop=revisions&rvprop=content&format=json", function(error, results) {
-		console.log(results.content);
-	});
-
-	 
-
 });
+
 Template.main.helpers({
 	getLocation: function() {
 		loc = Geolocation.latLng();
 		return loc;
 	}
 })
-// Template.home.helpers({
-// 	MapOptions: function() {
-// 		loc = Geolocation.latLng()
-// 		if (GoogleMaps.loaded() && loc) {
-// 			return {
-// 				center: new google.maps.LatLng(loc.lat, loc.lng),
-// 				// center: new google.maps.LatLng(-37.8136, 144.9631),
-// 				zoom: 15
-// 			};
-// 		}
-//   	},
-//   	svMapOptions: function() {
-//   		loc = Geolocation.latLng()
-//   		if (GoogleMaps.loaded() && loc) {
-//   			console.log(loc);
-//   			console.log("___");
-//   			console.log(new google.maps.LatLng(loc.lat, loc.lng));
-//   			return {
-//   				// position: new google.maps.LatLng(loc.lat, loc.lng)
-//   				position: new google.maps.LatLng(-37.8136, 144.9631)
-// 		        // pov: {
-// 		        //   heading: 34,
-// 		        //   pitch: 10
-// 		        // }
-//   			};
-//   		}
-//   	},
-//   	geolocationError: function() {
-//  	  var error = Geolocation.error();
-// 	  return error && error.message;
-// 	}
-// });
-
-// Template.home.events({
-
-// });
