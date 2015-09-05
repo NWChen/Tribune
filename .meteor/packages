@@ -4,5 +4,8 @@ twbs:bootstrap
 insecure
 autopublish
 mdg:geolocation
+<<<<<<< HEAD
 dburles:google-maps
 http
+=======
+>>>>>>> 720404b5cc2b9e13d2b57ad2ad3f66327812c135
