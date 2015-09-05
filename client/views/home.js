@@ -4,7 +4,6 @@ map = null;
 panorama = null;
 
 Template.main.onCreated(function() {
-	yelpQuery('a','a','a','a');
 	// GoogleMaps.ready("map", function(map) {
 	// 	console.log("map here");
 	// 	var marker = new google.maps.Marker({
@@ -43,8 +42,6 @@ Template.main.onCreated(function() {
 	  });
 	
 	function initialize() {
-	  
-	  console.log(Session.get('geo'))
 	  geocoder = new google.maps.Geocoder();
 	  var fenway = new google.maps.LatLng(42.345573, -71.098326);
 	  var wells_fargo_stadium = new google.maps.LatLng(39.902114499999996, -75.17082359999999);
@@ -86,18 +83,20 @@ Template.main.onCreated(function() {
 	  panorama.addListener('position_changed', function() {
 	  	console.log(panorama.getPosition().G);
 	  	console.log(panorama.getPosition().K);
+	  	// console.log(Meteor.call("searchYelp", '', 'false', panorama.getPosition().G, panorama.getPosition().K));
+	  	Meteor.call("searchYelp", '', 'false', panorama.getPosition().G, panorama.getPosition().K, function(err, result) {
+		  		if (err) {
+		  			console.log(err)
+		  		} else {
+		  			console.log(result)
+		  		}
+  		});
 	  	//TODO collect yelp queries
 	  })
 	};
 	google.maps.event.addDomListener(window, 'load', initialize);
-
-	Meteor.call("getPage", "https://en.wikipedia.org/w/api.php?action=query&titles=Empire%20State%20Building&prop=revisions&rvprop=content&format=json", function(error, results) {
-		console.log(results.content);
-	});
-
-	 
-
 });
+
 Template.main.helpers({
 	getLocation: function() {
 		loc = Geolocation.latLng();
@@ -105,87 +104,3 @@ Template.main.helpers({
 	}
 })
 
-/* Yelp functions */
-var yelpQuery = function(search, isCategory, longitude, latitude) {
-  console.log('Yelp search for userId: ' + this.userId + '(search, isCategory, lng, lat) with vals (', search, isCategory, longitude, latitude, ')');
-
-  // Query OAUTH credentials (these are set manually)
-  var auth = Yelp.findOne();
-  console.log(auth);
-  return
-
-
-  // Add auth signature manually
-  auth['serviceProvider'] = { signatureMethod: "HMAC-SHA1" };
-
-  var accessor = {
-    consumerSecret: auth.consumerSecret,
-    tokenSecret: auth.accessTokenSecret
-  },
-  parameters = {};
-
-  // Search term or categories query
-  if(isCategory)
-    parameters.category_filter = search;
-  else
-    parameters.term = search;
-
-  // Set lat, lon location, if available (SF is default location)
-  if(longitude && latitude)
-    parameters.ll = latitude + ',' + longitude;
-  else
-    parameters.location = 'San+Francisco';
-
-  // Results limited to 5
-  parameters.limit = 5;
-
-  // Configure OAUTH parameters for REST call
-  parameters.oauth_consumer_key = auth.consumerKey;
-  parameters.oauth_consumer_secret = auth.consumerSecret;
-  parameters.oauth_token = auth.accessToken;
-  parameters.oauth_signature_method = auth.serviceProvider.signatureMethod;
-
-  // Create OAUTH1 headers to make request to Yelp API
-  var oauthBinding = new OAuth1Binding(auth.consumerKey, auth.consumerSecret, 'http://api.yelp.com/v2/search');
-  oauthBinding.accessTokenSecret = auth.accessTokenSecret;
-  var headers = oauthBinding._buildHeader();
-
-  // Return data results only
-  return oauthBinding._call('GET', 'http://api.yelp.com/v2/search', headers, parameters).data;
-}
-// Template.home.helpers({
-// 	MapOptions: function() {
-// 		loc = Geolocation.latLng()
-// 		if (GoogleMaps.loaded() && loc) {
-// 			return {
-// 				center: new google.maps.LatLng(loc.lat, loc.lng),
-// 				// center: new google.maps.LatLng(-37.8136, 144.9631),
-// 				zoom: 15
-// 			};
-// 		}
-//   	},
-//   	svMapOptions: function() {
-//   		loc = Geolocation.latLng()
-//   		if (GoogleMaps.loaded() && loc) {
-//   			console.log(loc);
-//   			console.log("___");
-//   			console.log(new google.maps.LatLng(loc.lat, loc.lng));
-//   			return {
-//   				// position: new google.maps.LatLng(loc.lat, loc.lng)
-//   				position: new google.maps.LatLng(-37.8136, 144.9631)
-// 		        // pov: {
-// 		        //   heading: 34,
-// 		        //   pitch: 10
-// 		        // }
-//   			};
-//   		}
-//   	},
-//   	geolocationError: function() {
-//  	  var error = Geolocation.error();
-// 	  return error && error.message;
-// 	}
-// });
-
-// Template.home.events({
-
-// });
