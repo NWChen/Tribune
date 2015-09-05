@@ -1,6 +1,6 @@
 # pennapps
 ---
-### --shitty-- ideas
+--shitty-- ideas
 * app to generate rap lyrics using NLP
 * app to automatically detect and label privilege
 * sockulus: 2D ultrasonic environment mapping for blind people
