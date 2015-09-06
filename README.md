@@ -1,4 +1,4 @@
-# pennapps
+# ~~pennapps~~ pivot.
 ---
 ### ~~shitty~~ ideas
 * wikipedia graph visualization using pagerank (?)
