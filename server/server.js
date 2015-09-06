@@ -5,7 +5,9 @@ var getYelpOauthBinding = function(url) {
   	"consumerKey" : "MScCZF4c_8rc-KH6dfx3GA", 
   	"consumerSecret" : "fqr5b4smJmQzoErNT00ndzKlTzo", 
   	"accessToken" : "o3TKKDUd6GfvTFVyHwsHyVWelD1rrqDo", 
-  	"accessTokenSecret" : "jn83jzKHt6ECmIeu6ZpaqkOS74U" 
+  	"accessTokenSecret" : "jn83jzKHt6ECmIeu6ZpaqkOS74U",
+    "clientId" : "USXH5WGYCGFVNHWL1DIXECUCKQP2LEUP5OWF2FQVZDMU0AKO",
+    "clientSecret" : "L4IBFRRAGQG0GSBZIAFUUHTZK1KK3Q3LW5OZIVZ3FOUNJF3C"
   };
   console.log(config);
   if (config) {
@@ -72,7 +74,7 @@ Meteor.methods({
     return oauthBinding.get(url).data;
   },
   getPage: function(url) {
-  	this.unblock();
+    this.unblock();
   	return Meteor.http.call("GET", url);
   },
 	getWikiSummary: function(url) {
@@ -80,5 +82,26 @@ Meteor.methods({
 		var str = JSON.stringify(Meteor.call("getPage", url).content.replace(/(<([^>]+)>)/ig,""));
 		var extract = str.substring(str.indexOf("extract")+12, str.indexOf("\\\\n")).replace("\\\\u00a0", " ");
 		return extract;
-	}
+	},
+  initFoursquare: function() {
+    Foursquare.init({
+      id: config.clientId,
+      secret: config.clientSecret,
+      authOnly: false
+    });
+    /*
+    this.unblock();
+    var radius = 100;
+    var section = "specials";
+    var url = "https://api.foursquare.com/v2/venues/explore?ll="+lat+","+lng+"&radius="+radius+"&section="+section;
+    return Meteor.call("getPage", url);
+    */
+  },
+  updateLocation: function(lat, lng, id) {
+  	this.unblock();
+  	return People.upsert({"id" : id},{$set : {"lat" : lat, "lng" : lng, "id" : id}});
+  },
+  removeUser: function(id) {
+  	People.remove({"id" : id});
+  }
 });

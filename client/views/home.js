@@ -3,9 +3,13 @@ userpos = null;
 geocoder = null;
 map = null;
 panorama = null;
+id = null;
 
 Template.main.onCreated(function() {
+
 	var events = [] //for storing current events on map
+	var people = {}
+	id = Random.id();
 
 	var contentString = '<div id="content">'+
     	'<div id="siteNotice">'+
@@ -35,27 +39,46 @@ Template.main.onCreated(function() {
     var prevInfoWindow;
 
 	//grab user's current physical location
-	if(navigator.geolocation) {
+	/* if(navigator.geolocation) {
   	browserSupportFlag = true;
   	navigator.geolocation.getCurrentPosition(function(position) {
       userpos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     }, function() {
     		handleNoGeolocation(browserSupportFlag);
   	});
+
 	} else {
     userpos = new google.maps.LatLng(40.7127, 74.0059);
 	}
 
+	} else { */
+    userpos = new google.maps.LatLng(40.729884, -73.990988);
+	/* } */	
+
+	//recursively look for a valid streetview position
+	function handler(data, status) {
+		if(status==google.maps.StreetViewStatus.OK) {
+			var userpos = data.location.latLng;
+		} else {
+			radius += 5;
+			streetViewService.getPanoramaByLocation(userpos, radius, handler);
+		}
+	} 
+
 	function initialize() {
+		if (map != null) {
+			return;
+		}
   	geocoder = new google.maps.Geocoder();
 
-    streetViewService = new google.maps.StreetViewService();
-    streetViewService.getPanoramaByLocation(userpos, radius, handler);
+    //streetViewService = new google.maps.StreetViewService();
+    //streetViewService.getPanoramaByLocation(userpos, radius, handler);
 
 		var mapOptions = {
 		    center: userpos,
 		    zoom: 16
-	  	};
+	  };
+
 	  map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
   	var panoramaOptions = {
@@ -65,13 +88,13 @@ Template.main.onCreated(function() {
 	      	pitch: 10
     	}
   	};
-		panorama = new google.maps.StreetViewPanorama(document.getElementById('sv'), panoramaOptions);
+	  panorama = new google.maps.StreetViewPanorama(document.getElementById('sv'), panoramaOptions);
 	  	map.setStreetView(panorama);
 
 	//recursively look for a valid streetview position
+	/*
 		function handler(data, status) {
 			if(status==google.maps.StreetViewStatus.OK) {
-				console.log(":",data);
 				map.setCenter(data.location.latLng);
 				//panorama.setPosition(data.location.latLng);
 			} else {
@@ -79,6 +102,7 @@ Template.main.onCreated(function() {
 				streetViewService.getPanoramaByLocation(userpos, radius, handler);
 			}
 		}
+	*/
 
 		//>>>>panorama.setPosition(new google.maps.LatLng(40.7127, 74.0059));
 
@@ -102,14 +126,19 @@ Template.main.onCreated(function() {
 	  	/* Map Event Listeners */
 	  	panorama.addListener('position_changed', function() {
 	  		// console.log(Meteor.call("searchYelp", '', 'false', panorama.getPosition().G, panorama.getPosition().K));
+	  		Meteor.call("updateLocation", panorama.getPosition().G, panorama.getPosition().K, id, function(err, result) {
+	  			if (err) {
+	  				console.log(err);
+	  			} else {
+	  				console.log(result);
+	  			}
+	  		});
 	  		Meteor.call("searchYelp", '', 'false', panorama.getPosition().G, panorama.getPosition().K, function(err, result) {
 		  		if (err) {
 		  			console.log(err)
 		  		} else {
 		  			console.log(result)
 		  			result['businesses'].map(function(item) {
-		  				console.log(item);
-		  				console.log(events);
 		  				if ($.inArray(item['id'], events) != -1) {
 		  					console.log("in array, returning");
 		  					return;
@@ -138,7 +167,7 @@ Template.main.onCreated(function() {
 					      	'</div>'+
 					      	'<h1 class="firstHeading">' + item['name'] + '</h1>'+
 					      	'<div class="location-image"><img src="' + item['image_url'] + '"></div>' +
-					      	'<div class="location-rating"><img src="' + item['rating_img_url'] + '"></div>' +
+					      	'<div class="location-rating"><img src="' + item['rating_img_url'] + '"><p>' + item['review_count'] +' reviews</p></div>' +
 					      	'<div class="bodyContent">'+
 					      	'<p>' + item['snippet_text'] + '</p>'+
 					      	'<p><a href="' +  item['url'] + '" target="_blank">Link</a>'+
@@ -161,11 +190,66 @@ Template.main.onCreated(function() {
 		  			})
 		  		}
   			});
-	  	//TODO collect yelp queries
+	  	
 	  	})
+		
+		/* DB event listeners */	
+		People.find().observe({
+			added: function(doc) {
+				
+				console.log(doc);
+				if (doc.id != id) {
+					console.log("PERSON ADDED");
+					console.log(doc)
+					console.log(doc.lat)
+					console.log(doc.lng)
+					var person = new google.maps.Marker({
+						draggable: false,
+						animation: google.maps.Animation.DROP, 
+						// position: {lat: doc.lat, lng: doc.lng},
+						position: new google.maps.LatLng(doc.lat,doc.lng),
+						map: map,
+						icon: 'images/santa.png'//TODO determine gender
+					})
+					// var marker = new google.maps.Marker({
+					// 	draggable: false,
+					// 	animation: google.maps.Animation.DROP, 
+					// 	// position: {lat: doc.lat, lng: doc.lng},
+					// 	position: new google.maps.LatLng(doc.lat, doc.lng),
+					// 	map: map,
+					// 	icon: 'images/two-piece.png'//TODO determine gender
+					// })
+
+					people[doc.id] = person
+				}
+			},
+			changed: function(newD, oldD) {
+				if (newD.id != id) {
+					console.log("PERSON CHANGED");
+					console.log(newD);
+					console.log(people[newD.id]);
+					people[newD.id].setPosition({lat: newD.lat, lng: newD.lng})
+				}
+			},
+			removed: function(oldD) {
+				if (oldD.id != id) {
+					console.log("PERSON DELETED");
+					console.log(oldD);
+					markers[oldD.id].setMap(null)
+					delete markers[oldD.id]
+				}
+			}
+		})
+	
+
+			
+
 	};
 
 	google.maps.event.addDomListener(window, 'load', initialize);
+
+	
+
 });
 
 Template.main.helpers({
