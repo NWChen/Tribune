@@ -19,7 +19,13 @@ var getYelpOauthBinding = function(url) {
     return oauthBinding;
   } else {
     throw new Meteor.Error(500, 'Yelp Not Configured');
-  }  
+  }
+
+  Foursquare.init({
+    id: config.clientId,
+    secret: config.clientSecret,
+    authOnly: false
+  });  
 }
 
 Meteor.methods({
@@ -83,20 +89,6 @@ Meteor.methods({
 		var extract = str.substring(str.indexOf("extract")+12, str.indexOf("\\\\n")).replace("\\\\u00a0", " ");
 		return extract;
 	},
-  initFoursquare: function() {
-    Foursquare.init({
-      id: config.clientId,
-      secret: config.clientSecret,
-      authOnly: false
-    });
-    /*
-    this.unblock();
-    var radius = 100;
-    var section = "specials";
-    var url = "https://api.foursquare.com/v2/venues/explore?ll="+lat+","+lng+"&radius="+radius+"&section="+section;
-    return Meteor.call("getPage", url);
-    */
-  },
   updateLocation: function(lat, lng, id) {
   	this.unblock();
   	return People.upsert({"id" : id},{$set : {"lat" : lat, "lng" : lng, "id" : id}});
